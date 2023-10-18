@@ -32,12 +32,30 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    const userCollection = client.db("infoDB").collection("user");
+
+    app.get('/user', async(req,res)=>{
+        const cursor = userCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+
+    app.post('/user', async(req,res)=>{
+        const newUser = req.body;
+        console.log(newUser);
+        const result = await userCollection.insertOne(newUser);
+        
+        res.send(result);
+            
+    })
+
+   
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    console.log("Pinged my deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    //await client.close();
   }
 }
 run().catch(console.dir);
@@ -45,14 +63,13 @@ run().catch(console.dir);
 
 
 
-
-
-
-
 app.get('/', (req,res)=>{
-    res.send('CRUD TEST server is running')
+    res.send('tech-fleet-server is running')
 })
 
 app.listen(port, ()=>{
-    console.log(`CRUD TEST Server is running on post: ${port}`);
+    console.log(`tech-fleet-server is running on post: ${port}`);
 })
+
+
+
