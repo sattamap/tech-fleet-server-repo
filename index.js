@@ -47,11 +47,17 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
     })
-      app.get('/products/:id', async(req,res)=>{
-        const cursor = productCollection.find();
-        const result = await cursor.toArray();
-        res.send(result);
+
+    
+    app.get('/products/:id',async(req,res)=>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+    
+        const user = await productCollection.findOne(query);
+        res.send(user);
     })
+     
+ 
       app.get('/cart', async(req,res)=>{
         const cursor = cartCollection.find();
         const result = await cursor.toArray();
@@ -62,12 +68,36 @@ async function run() {
 
   
 
-    app.post('/product', async(req,res)=>{
+    app.post('/products', async(req,res)=>{
         const newProduct = req.body;
         console.log(newProduct);
         const result = await productCollection.insertOne(newProduct);
         
         res.send(result);
+
+
+    app.put('/products/:id',async(req,res)=>{
+            const id = req.params.id;
+            const products = req.body;
+            console.log('new user',id,products);
+            const filter = {_id: new ObjectId(id)}
+            const option = {upsert:true}
+            const updatedProduct = {
+                $set:{
+                    image: products.image,
+                    name: products.name,
+                    bandName: products.bandName,
+                    type: products.type,
+                    price: products.price,
+                    description: products.description,
+                   
+                    
+                }
+            }
+            console.log(updatedProduct);
+            const result = await productCollection.updateOne(filter, updatedProduct, option)
+            res.send(result);
+        });
             
     })
     app.post('/cart', async(req,res)=>{
