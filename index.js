@@ -90,6 +90,8 @@ async function run() {
                     type: products.type,
                     price: products.price,
                     description: products.description,
+                    rating: products.rating,
+                   
                    
                     
                 }
